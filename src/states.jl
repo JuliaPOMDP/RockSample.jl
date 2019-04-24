@@ -1,19 +1,24 @@
-POMDPs.n_states(pomdp::RockSamplePOMDP) = pomdp.map_size^2*2^pomdp.n_rocks + 1
+POMDPs.n_states(pomdp::RockSamplePOMDP) = pomdp.map_size[1]*pomdp.map_size[2]*2^pomdp.n_rocks + 1
 
 function POMDPs.stateindex(pomdp::RockSamplePOMDP{K}, s::RSState{K}) where K
-    rocks_ind = Int.(s.rocks) + 1
-    rocks_dim = 2*ones(SVector{K})
-    LinearIndices((pomdp.map_size,pomdp.map_size, rocks_dim...))[s.pos...,rocks_ind...]
+    if isterminal(pomdp, s)
+        return n_states(pomdp)
+    end
+    rocks_ind = Int64.(s.rocks) + 1
+    rocks_dim = fill(2, K)
+    nx, ny = pomdp.map_size
+    LinearIndices((nx, ny, rocks_dim...))[s.pos...,rocks_ind...]
 end
 
 function state_from_index(pomdp::RockSamplePOMDP{K}, si::Int) where K
     if si == n_states(pomdp)
-        return terminal_state(pomdp)
+        return pomdp.terminal_state
     end
-    rocks_dim = 2*ones(SVector{3})
-    s = CartesianIndices((pomdp.map_size, pomdp.map_size, rocks_dim...))[si]
+    rocks_dim = fill(2, K)
+    nx, ny = pomdp.map_size
+    s = CartesianIndices((nx, ny, rocks_dim...))[si]
     pos = RSPos(s[1], s[2])
-    rocks = SVector{K, Bool}(s[3:end]...)
+    rocks = SVector{K, Bool}([(s[i] - 1) for i=3:K+2])
     return RSState{K}(pos, rocks)
 end
 
@@ -34,15 +39,17 @@ function POMDPs.initialstate(pomdp::RockSamplePOMDP{K}, rng::AbstractRNG) where 
     return RSState{K}(pomdp.init_pos, rocks)
 end
 
-
-
-function POMDPs.initialstatedistribution(pomdp::RockSamplePOMDP{K}) where K 
+function POMDPs.initialstate_distribution(pomdp::RockSamplePOMDP{K}) where K 
     probs = normalize!(ones(2^K), 1)
-    states = [RSState(pomdp.init_pos, rocks) for rocks in rock_state]
+    states = Vector{RSState{K}}(undef, 2^K)
+    for (i,rocks) in enumerate(Iterators.product(ntuple(x->[false, true], K)...))
+        states[i] = RSState{K}(pomdp.init_pos, SVector(rocks))
+    end
+    return SparseCat(states, probs)
 end
 
-
-function rock_states(k::Int64)
-    rocks_dim = 2*ones(SVector{3})
-    s = CartesianIndices((rocks_dim...))
-end
+#XXX is this useful?
+# function rock_states(k::Int64)
+#     rocks_dim = 2*ones(SVector{3})
+#     s = CartesianIndices((rocks_dim...))
+# end
