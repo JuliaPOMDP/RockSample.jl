@@ -112,5 +112,6 @@ end
 
 @testset "rendering" begin 
     pomdp = RockSamplePOMDP{3}(init_pos=(1,1))
-    render(pomdp, Dict(:s => (3,2)))
+    s0 = RSState{3}((1,1), [true, false, true])
+    render(pomdp, (s=s0, a=3))
 end
