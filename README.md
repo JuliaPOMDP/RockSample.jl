@@ -7,6 +7,8 @@ Implement the RockSample [1] problem with the [POMDPs.jl](https://github.com/Jul
 
 [1] T. Smith, R. Simmons, "Heuristic Search Value Iteration for POMDPs," in *Association for Uncertainty in Artificial Intelligence (UAI)*, 2004
 
+![Rock Sample Illustration](./rocksample.gif)
+
 ## Installation
 
 ```julia
@@ -17,7 +19,16 @@ Pkg.add(PackageSpec(url="https://github.com/JuliaPOMDP/RockSample.jl"))
 
 ## Problem description
 
-![Rock Sample Illustration](./rocksample.gif)
+
+- **States**: position of the robot and status of the rocks.
+
+- **Actions**: There are 5 basic actions, moving up, down, left, and right, and sampling a rock and $K$ sensing actions to check the state of a rock. When sampling or sensing, the robot does not move.  
+
+- **Transition model**: When taking a moving action, the robot moves deterministically to the desired cell. The robot can only exit the map by the exit area (on the right side of the grid). Actions that causes the robot to go over the edge of the grid have no effects.
+
+- **Observation model**: The robot can observe the status of the rock with some noise when executing a sensing action. The noise varies exponentially with the distance to the rock. The decaying rate is controlled by the parameter `sensor_efficiency`. If the robot is moving or sampling it does not receive an observation (receives `:none`).
+
+- **Reward model**: The robot receives a positive reward of `exit_reward` for reaching the exit area. When sampling, the robot receives a reward of `good_rock_reward` if the sampled rock is good or `bad_rock_penalty` (negative number) if the rock is bad.
 
 ### Example
 
@@ -39,16 +50,6 @@ policy = solve(solver, pomdp)
 sim = GifSimulator(filename="test.gif", max_steps=30)
 simulate(sim, pomdp, policy)
 ```
-
-- **States**: position of the robot and status of the rocks.
-
-- **Actions**: There are 5 basic actions, moving up, down, left, and right, and sampling a rock and $K$ sensing actions to check the state of a rock. When sampling or sensing, the robot does not move.  
-
-- **Transition model**: When taking a moving action, the robot moves deterministically to the desired cell. The robot can only exit the map by the exit area (on the right side of the grid). Actions that causes the robot to go over the edge of the grid have no effects.
-
-- **Observation model**: The robot can observe the status of the rock with some noise when executing a sensing action. The noise varies exponentially with the distance to the rock. The decaying rate is controlled by the parameter `sensor_efficiency`. If the robot is moving or sampling it does not receive an observation (receives `:none`).
-
-- **Reward model**: The robot receives a positive reward of `exit_reward` for reaching the exit area. When sampling, the robot receives a reward of `good_rock_reward` if the sampled rock is good or `bad_rock_penalty` (negative number) if the rock is bad.
 
 
 **`RockSamplePOMDP` Parameters:** 
