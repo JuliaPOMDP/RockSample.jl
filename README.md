@@ -14,6 +14,29 @@ Pkg.add(PackageSpec(url="https://github.com/JuliaPOMDP/RockSample.jl"))
 
 ## Problem description
 
+![Rock Sample Illustration](./rocksample.gif)
+
+### Example
+
+```julia
+using POMDPs
+using RockSample 
+using SARSOP # load a  POMDP Solver
+using POMDPGifs # to make gifs
+
+pomdp = RockSamplePOMDP{3}(rocks_positions=[(2,3), (4,4), (4,2)], 
+                           sensor_efficiency=20.0,
+                           discount_factor=0.95, 
+                           good_rock_reward = 20.0)
+
+solver = SARSOPSolver(precision=1e-3)
+
+policy = solve(solver, pomdp)
+
+sim = GifSimulator(filename="test.gif", max_steps=30)
+simulate(sim, pomdp, policy)
+```
+
 - **States**: position of the robot and status of the rocks.
 
 - **Actions**: There are 5 basic actions, moving up, down, left, and right, and sampling a rock and $K$ sensing actions to check the state of a rock. When sampling or sensing, the robot does not move.  
@@ -24,7 +47,6 @@ Pkg.add(PackageSpec(url="https://github.com/JuliaPOMDP/RockSample.jl"))
 
 - **Reward model**: The robot receives a positive reward of `exit_reward` for reaching the exit area. When sampling, the robot receives a reward of `good_rock_reward` if the sampled rock is good or `bad_rock_penalty` (negative number) if the rock is bad.
 
-![Rock Sample Illustration](./rocksample.svg)
 
 **`RockSamplePOMDP` Parameters:** 
 
