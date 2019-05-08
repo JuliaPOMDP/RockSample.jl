@@ -1,4 +1,7 @@
 function POMDPs.transition(pomdp::RockSamplePOMDP{K}, s::RSState{K}, a::Int64) where K
+    if isterminal(pomdp, s)
+        return Deterministic(pomdp.terminal_state)
+    end
     if a < N_BASIC_ACTIONS
         # the robot moves 
         new_pos = s.pos + ACTION_DIRS[a]
