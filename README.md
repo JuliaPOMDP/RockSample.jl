@@ -1,8 +1,8 @@
 # RockSample.jl 
 
-[![Build Status](https://travis-ci.org/MaximeBouton/RockSample.jl.svg?branch=master)](https://travis-ci.org/MaximeBouton/RockSample.jl)
-[![Coverage Status](https://coveralls.io/repos/github/MaximeBouton/RockSample.jl/badge.svg?branch=master)](https://coveralls.io/github/MaximeBouton/RockSample.jl?branch=master)
-[![codecov](https://codecov.io/gh/maximebouton/RockSample.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/maximebouton/RockSample.jl)
+[![Build Status](https://travis-ci.org/JuliaPOMDP/RockSample.jl.svg?branch=master)](https://travis-ci.org/JuliaPOMDP/RockSample.jl)
+[![Coverage Status](https://coveralls.io/repos/github/JuliaPOMDP/RockSample.jl/badge.svg?branch=master)](https://coveralls.io/github/JuliaPOMDP/RockSample.jl?branch=master)
+[![codecov](https://codecov.io/gh/juliapomdp/RockSample.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/juliapomdp/RockSample.jl)
 
 Implement the RockSample [1] problem with the [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl) interface. 
 
