@@ -1,4 +1,4 @@
-POMDPs.n_states(pomdp::RockSamplePOMDP) = pomdp.map_size[1]*pomdp.map_size[2]*2^pomdp.n_rocks + 1
+POMDPs.n_states(pomdp::RockSamplePOMDP) = pomdp.map_size[1]*pomdp.map_size[2]*2^length(pomdp.rocks_positions) + 1
 
 function POMDPs.stateindex(pomdp::RockSamplePOMDP{K}, s::RSState{K}) where K
     if isterminal(pomdp, s)

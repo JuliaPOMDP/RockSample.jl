@@ -115,3 +115,8 @@ end
     s0 = RSState{3}((1,1), [true, false, true])
     render(pomdp, (s=s0, a=3))
 end
+
+@testset "constructor" begin
+    @test RockSamplePOMDP() isa RockSamplePOMDP
+    @test RockSamplePOMDP(rocks_positions=[(1,1),(2,2)]) isa RockSamplePOMDP{2}
+end
