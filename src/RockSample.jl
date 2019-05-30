@@ -31,18 +31,29 @@ end
 
 @with_kw struct RockSamplePOMDP{K} <: POMDP{RSState{K}, Int64, Int64}
     map_size::Tuple{Int64, Int64} = (5,5)
-    n_rocks::Int64 = K
-    rocks_positions::Vector{RSPos} = [(1,1), (3,3), (4,4)]
+    rocks_positions::SVector{K,RSPos} = @SVector([(1,1), (3,3), (4,4)])
     init_pos::RSPos = (1,1)
     sensor_efficiency::Float64 = 10.0
     bad_rock_penalty::Float64 = -10
     good_rock_reward::Float64 = 10.
     exit_reward::Float64 = 10.
-    terminal_state::RSState{K} = RSState{K}(RSPos(-1,-1), SVector{K, Bool}([false for i=1:K]))
+    terminal_state::RSState{K} = RSState(RSPos(-1,-1),
+                                         SVector{length(rocks_positions),Bool}(falses(length(rocks_positions))))
     discount_factor::Float64 = 0.95
 end
 
-# RockSamplePOMDP(;n_rocks::Int64=3, kwargs...) = RockSamplePOMDP{n_rocks}(;kwargs...)
+# to handle the case where rocks_positions is not a StaticArray
+function RockSamplePOMDP(map_size,
+                         rocks_positions,
+                         args...
+                        )
+
+    k = length(rocks_positions)
+    return RockSamplePOMDP{k}(map_size,
+                              SVector{k,RSPos}(rocks_positions),
+                              args...
+                             )
+end
 
 POMDPs.isterminal(pomdp::RockSamplePOMDP, s::RSState) = s.pos == pomdp.terminal_state.pos 
 POMDPs.discount(pomdp::RockSamplePOMDP) = pomdp.discount_factor

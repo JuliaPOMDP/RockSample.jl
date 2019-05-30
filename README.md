@@ -39,10 +39,10 @@ using RockSample
 using SARSOP # load a  POMDP Solver
 using POMDPGifs # to make gifs
 
-pomdp = RockSamplePOMDP{3}(rocks_positions=[(2,3), (4,4), (4,2)], 
-                           sensor_efficiency=20.0,
-                           discount_factor=0.95, 
-                           good_rock_reward = 20.0)
+pomdp = RockSamplePOMDP(rocks_positions=[(2,3), (4,4), (4,2)], 
+                        sensor_efficiency=20.0,
+                        discount_factor=0.95, 
+                        good_rock_reward = 20.0)
 
 solver = SARSOPSolver(precision=1e-3)
 
