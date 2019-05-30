@@ -117,6 +117,6 @@ end
 end
 
 @testset "constructor" begin
-    pomdp = RockSamplePOMDP()
-    pomdp2 = RockSamplePOMDP(rocks_positions=[(1,1),(2,2)])
+    @test RockSamplePOMDP() isa RockSamplePOMDP
+    @test RockSamplePOMDP(rocks_positions=[(1,1),(2,2)]) isa RockSamplePOMDP{2}
 end
