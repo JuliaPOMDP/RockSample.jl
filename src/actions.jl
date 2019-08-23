@@ -16,7 +16,7 @@ POMDPs.actions(pomdp::RockSamplePOMDP{K}) where K = 1:N_BASIC_ACTIONS+K
 POMDPs.actionindex(pomdp::RockSamplePOMDP, a::Int64) = a
 
 function POMDPs.actions(pomdp::RockSamplePOMDP, s::RSState) 
-    if in(s.pos, pomdp.rock_pos) # slow? pomdp.rock_pos is a vec 
+    if in(s.pos, pomdp.rocks_positions) # slow? pomdp.rock_pos is a vec 
         return actions(pomdp)
     else
         # sample not available
