@@ -36,6 +36,11 @@ end
     @test acts == ordered_actions(pomdp)
     @test length(acts) == n_actions(pomdp)
     @test length(acts) == RockSample.N_BASIC_ACTIONS + 3
+    s = RSState{3}((1,1), (true, false, false))
+    @test actions(pomdp, s) == actions(pomdp)
+    s2 = RSState{3}((1,2), (true, false, false))
+    @test length(actions(pomdp, s2)) == n_actions(pomdp) - 1
+    @test actionindex(pomdp, 1) == 1
 end
 
 @testset "transition" begin
