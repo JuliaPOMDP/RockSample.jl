@@ -2,13 +2,7 @@ function POMDPs.transition(pomdp::RockSamplePOMDP{K}, s::RSState{K}, a::Int64) w
     if isterminal(pomdp, s)
         return Deterministic(pomdp.terminal_state)
     end
-    if a < N_BASIC_ACTIONS
-        # the robot moves 
-        new_pos = s.pos + ACTION_DIRS[a]
-    elseif a >= N_BASIC_ACTIONS 
-        # robot check rocks or samples
-        new_pos = s.pos
-    end
+    new_pos = next_position(s, a)
     if a == BASIC_ACTIONS_DICT[:sample] && in(s.pos, pomdp.rocks_positions)
         rock_ind = findfirst(isequal(s.pos), pomdp.rocks_positions) # slow ?
         # set the new rock to bad
@@ -29,4 +23,16 @@ function POMDPs.transition(pomdp::RockSamplePOMDP{K}, s::RSState{K}, a::Int64) w
         new_state = RSState{K}(new_pos, new_rocks)
     end
     return Deterministic(new_state)
+end
+
+function next_position(s::RSState, a::Int64)
+    if a < N_BASIC_ACTIONS
+        # the robot moves 
+        return s.pos + ACTION_DIRS[a]
+    elseif a >= N_BASIC_ACTIONS 
+        # robot check rocks or samples
+        return s.pos
+    else
+        throw("ROCKSAMPLE ERROR: action $a not valid")
+    end
 end

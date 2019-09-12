@@ -1,5 +1,5 @@
 function POMDPs.reward(pomdp::RockSamplePOMDP, s::RSState, a::Int64)
-    if isterminal(pomdp, s)
+    if next_position(s, a)[1] > pomdp.map_size[1]
         return pomdp.exit_reward
     end
 
@@ -8,8 +8,4 @@ function POMDPs.reward(pomdp::RockSamplePOMDP, s::RSState, a::Int64)
         return s.rocks[rock_ind] ? pomdp.good_rock_reward : pomdp.bad_rock_penalty 
     end
     return 0.
-end
-
-function POMDPs.reward(pomdp::RockSamplePOMDP, s::RSState, a::Int64, sp::RSState)
-    return reward(pomdp, sp, a)
 end
