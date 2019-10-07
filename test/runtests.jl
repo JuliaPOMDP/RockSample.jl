@@ -21,12 +21,12 @@ end
     pomdp = RockSamplePOMDP{3}()
     state_iterator =  states(pomdp)
     ss = ordered_states(pomdp)
-    @test length(ss) == n_states(pomdp)
+    @test length(ss) == length(pomdp)
     @test test_state_indexing(pomdp, ss)
     pomdp = RockSamplePOMDP{3}(map_size=(7, 10))
     state_iterator =  states(pomdp)
     ss = ordered_states(pomdp)
-    @test length(ss) == n_states(pomdp)
+    @test length(ss) == length(pomdp)
     @test test_state_indexing(pomdp, ss)
 end
 
@@ -34,12 +34,12 @@ end
     pomdp = RockSamplePOMDP{3}()
     acts = actions(pomdp)
     @test acts == ordered_actions(pomdp)
-    @test length(acts) == n_actions(pomdp)
+    @test length(acts) == length(actions(pomdp))
     @test length(acts) == RockSample.N_BASIC_ACTIONS + 3
     s = RSState{3}((1,1), (true, false, false))
     @test actions(pomdp, s) == actions(pomdp)
     s2 = RSState{3}((1,2), (true, false, false))
-    @test length(actions(pomdp, s2)) == n_actions(pomdp) - 1
+    @test length(actions(pomdp, s2)) == length(actions(pomdp)) - 1
     @test actionindex(pomdp, 1) == 1
 end
 
