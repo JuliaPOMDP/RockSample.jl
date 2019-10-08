@@ -1,6 +1,5 @@
 const OBSERVATION_NAME = (:good, :bad, :none)
 
-POMDPs.n_observations(pomdp::RockSamplePOMDP) = 3
 POMDPs.observations(pomdp::RockSamplePOMDP) = 1:3
 POMDPs.obsindex(pomdp::RockSamplePOMDP, o::Int64) = o
 
