@@ -1,6 +1,6 @@
 name = "RockSample"
 uuid = "de008ff0-c357-11e8-3329-7fe746fe836e"
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 Compose = "a81c6b42-2e10-5240-aca2-a61377ecd94b"
