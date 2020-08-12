@@ -2,7 +2,7 @@ function POMDPs.stateindex(pomdp::RockSamplePOMDP{K}, s::RSState{K}) where K
     if isterminal(pomdp, s)
         return length(pomdp)
     end
-    rocks_ind = Int64.(s.rocks) + 1
+    rocks_ind = Int64.(s.rocks) .+ 1
     rocks_dim = fill(2, K)
     nx, ny = pomdp.map_size
     LinearIndices((nx, ny, rocks_dim...))[s.pos...,rocks_ind...]
@@ -34,12 +34,7 @@ function Base.iterate(pomdp::RockSamplePOMDP, i::Int64=1)
     return (s, i+1)
 end
 
-function POMDPs.initialstate(pomdp::RockSamplePOMDP{K}, rng::AbstractRNG) where K
-    rocks = SVector{K}(rand(rng, [true, false], K))
-    return RSState{K}(pomdp.init_pos, rocks)
-end
-
-function POMDPs.initialstate_distribution(pomdp::RockSamplePOMDP{K}) where K 
+function POMDPs.initialstate(pomdp::RockSamplePOMDP{K}) where K 
     probs = normalize!(ones(2^K), 1)
     states = Vector{RSState{K}}(undef, 2^K)
     for (i,rocks) in enumerate(Iterators.product(ntuple(x->[false, true], K)...))
