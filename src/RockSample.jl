@@ -41,6 +41,7 @@ end
     exit_reward::Float64 = 10.
     terminal_state::RSState{K} = RSState(RSPos(-1,-1),
                                          SVector{length(rocks_positions),Bool}(falses(length(rocks_positions))))
+    indices::Vector{Int} = cumprod([map_size[1], map_size[2], fill(2, length(rocks_positions))...][1:end-1])
     discount_factor::Float64 = 0.95
 end
 

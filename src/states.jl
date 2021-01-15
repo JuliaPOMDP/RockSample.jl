@@ -2,10 +2,7 @@ function POMDPs.stateindex(pomdp::RockSamplePOMDP{K}, s::RSState{K}) where K
     if isterminal(pomdp, s)
         return length(pomdp)
     end
-    rocks_ind = Int64.(s.rocks) .+ 1
-    rocks_dim = fill(2, K)
-    nx, ny = pomdp.map_size
-    LinearIndices((nx, ny, rocks_dim...))[s.pos...,rocks_ind...]
+    s.pos[1] + pomdp.indices[1] * (s.pos[2]-1) + pomdp.indices[2:end]'s.rocks
 end
 
 function state_from_index(pomdp::RockSamplePOMDP{K}, si::Int) where K
