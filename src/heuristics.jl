@@ -16,3 +16,16 @@ function POMDPs.value(p::RSExit, b::AbstractParticleBelief)
     return utility / weight_sum(b)
 end
 POMDPs.action(p::RSExit, b) = 2
+
+struct RSMDPSolver <: Solver
+    include_Q::Bool
+end
+RSMDPSolver(;include_Q=false) = RSMDPSolver(include_Q)
+POMDPs.solve(solver::RSMDPSolver, m::RockSamplePOMDP) = ValueIterationPolicy(UnderlyingMDP(m), utility=rs_util(m), include_Q=solver.include_Q)
+POMDPs.solve(solver::RSMDPSolver, m::UnderlyingMDP{P}) where P <: RockSamplePOMDP = ValueIterationPolicy(m, utility=rs_util(m.pomdp), include_Q=solver.include_Q)
+
+struct RSQMDPSolver <: Solver
+    verbose::Bool
+end
+RSQMDPSolver(;verbose=false) = RSQMDPSolver(verbose)
+POMDPs.solve(solver::RSQMDPSolver, m::RockSamplePOMDP) =solve(QMDPSolver(ValueIterationSolver(init_util=rs_util(m), verbose=solver.verbose)), m)

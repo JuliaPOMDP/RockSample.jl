@@ -8,6 +8,9 @@ using Parameters
 using Random
 using Compose
 using Combinatorics
+using ParticleFilters
+using DiscreteValueIteration
+using QMDP
 
 export
     RockSamplePOMDP,
@@ -16,7 +19,9 @@ export
     rs_util,
     rsgen,
     RSExit,
-    RSExitSolver
+    RSExitSolver,
+    RSMDPSolver,
+    RSQMDPSolver
 
 const RSPos = SVector{2, Int64}
 
