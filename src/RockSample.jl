@@ -7,11 +7,13 @@ using StaticArrays
 using Parameters
 using Random
 using Compose
+using Combinatorics
 
 export
     RockSamplePOMDP,
     RSPos,
-    RSState
+    RSState,
+    rs_util
 
 const RSPos = SVector{2, Int64}
 
@@ -64,5 +66,6 @@ include("transition.jl")
 include("observations.jl")
 include("reward.jl")
 include("visualization.jl")
+include("util.jl")
 
 end # module

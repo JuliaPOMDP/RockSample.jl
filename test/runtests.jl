@@ -6,6 +6,8 @@ using POMDPModelTools
 using POMDPPolicies
 using POMDPSimulators
 using BeliefUpdaters
+using DiscreteValueIteration
+using QMDP
 using Test
 
 function test_state_indexing(pomdp::RockSamplePOMDP{K}, ss::Vector{RSState{K}}) where K
@@ -96,8 +98,16 @@ end
     @test reward(pomdp, s, RockSample.BASIC_ACTIONS_DICT[:east], sp) == pomdp.exit_reward
 end
 
+struct RSMDPSolver <: Solver end
+struct RSQMDPSolver <: Solver end
+POMDPs.solve(::RSMDPSolver, m::RockSamplePOMDP) = ValueIterationPolicy(UnderlyingMDP(m), utility=rs_util(m), include_Q=false)
+POMDPs.solve(::RSMDPSolver, m::UnderlyingMDP{P}) where P <: RockSamplePOMDP = ValueIterationPolicy(m, utility=rs_util(m.pomdp), include_Q=false)
+POMDPs.solve(::RSQMDPSolver, m::RockSamplePOMDP) =solve(QMDPSolver(ValueIterationSolver(init_util=rs_util(m))), m)
+
 @testset "simulation" begin 
     pomdp = RockSamplePOMDP{3}(init_pos=(1,1))
+    mdp = solve(RSMDPSolver(), UnderlyingMDP(pomdp))
+    qmdp = solve(RSQMDPSolver(), pomdp)
     rng = MersenneTwister(3)
     up = DiscreteUpdater(pomdp)
 
