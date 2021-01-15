@@ -13,7 +13,10 @@ export
     RockSamplePOMDP,
     RSPos,
     RSState,
-    rs_util
+    rs_util,
+    rsgen,
+    RSExit,
+    RSExitSolver
 
 const RSPos = SVector{2, Int64}
 
@@ -58,6 +61,16 @@ function RockSamplePOMDP(map_size,
                              )
 end
 
+function rsgen(map)
+    possible_ps = [(i, j) for i in 1:map[1], j in 1:map[1]]
+    selected = unique(rand(possible_ps, map[2]))
+    while length(selected) != map[2]
+        push!(selected, rand(possible_ps))
+        selected = unique!(selected)
+    end
+    return RockSamplePOMDP(map_size=(map[1],map[1]), rocks_positions=selected)
+end
+
 POMDPs.isterminal(pomdp::RockSamplePOMDP, s::RSState) = s.pos == pomdp.terminal_state.pos 
 POMDPs.discount(pomdp::RockSamplePOMDP) = pomdp.discount_factor
 
@@ -68,5 +81,6 @@ include("observations.jl")
 include("reward.jl")
 include("visualization.jl")
 include("util.jl")
+include("heuristics.jl")
 
 end # module
