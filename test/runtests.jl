@@ -108,9 +108,14 @@ end
     # go straight to the exit
     policy = FunctionPolicy(s->RockSample.BASIC_ACTIONS_DICT[:east]) 
     hr = HistoryRecorder(rng=rng)
-    hist = simulate(hr, pomdp, policy, up)
+    b0 = initialstate(pomdp)
+    s0 = rand(b0)
+    rs_exit = solve(RSExitSolver(), pomdp)
+    hist = simulate(hr, pomdp, policy, up, b0, s0)
     @test undiscounted_reward(hist) == pomdp.exit_reward
     @test discounted_reward(hist) ≈ discount(pomdp)^(n_steps(hist) - 1) * pomdp.exit_reward
+    @test discounted_reward(hist) ≈ value(rs_exit, s0)
+    @test value(rs_exit, pomdp.terminal_state) == 0.0
 
     # random policy
     policy = RandomPolicy(pomdp, rng=rng)

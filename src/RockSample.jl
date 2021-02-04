@@ -23,7 +23,7 @@ export
     RSMDPSolver,
     RSQMDPSolver
 
-const RSPos = SVector{2, Int64}
+const RSPos = SVector{2, Int}
 
 """
     RSState{K}
@@ -39,8 +39,8 @@ struct RSState{K}
     rocks::SVector{K, Bool}
 end
 
-@with_kw struct RockSamplePOMDP{K} <: POMDP{RSState{K}, Int64, Int64}
-    map_size::Tuple{Int64, Int64} = (5,5)
+@with_kw struct RockSamplePOMDP{K} <: POMDP{RSState{K}, Int, Int}
+    map_size::Tuple{Int, Int} = (5,5)
     rocks_positions::SVector{K,RSPos} = @SVector([(1,1), (3,3), (4,4)])
     init_pos::RSPos = (1,1)
     sensor_efficiency::Float64 = 10.0
