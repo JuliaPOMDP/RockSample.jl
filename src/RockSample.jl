@@ -10,14 +10,12 @@ using Compose
 using Combinatorics
 using ParticleFilters
 using DiscreteValueIteration
-using QMDP
+using POMDPPolicies
 
 export
     RockSamplePOMDP,
     RSPos,
     RSState,
-    rs_util,
-    rsgen,
     RSExit,
     RSExitSolver,
     RSMDPSolver,
@@ -49,6 +47,7 @@ end
     exit_reward::Float64 = 10.
     terminal_state::RSState{K} = RSState(RSPos(-1,-1),
                                          SVector{length(rocks_positions),Bool}(falses(length(rocks_positions))))
+    # Some special indices for quickly retrieving the stateindex of any state
     indices::Vector{Int} = cumprod([map_size[1], map_size[2], fill(2, length(rocks_positions))...][1:end-1])
     discount_factor::Float64 = 0.95
 end
@@ -66,15 +65,22 @@ function RockSamplePOMDP(map_size,
                              )
 end
 
-function rsgen(map)
-    possible_ps = [(i, j) for i in 1:map[1], j in 1:map[1]]
-    selected = unique(rand(possible_ps, map[2]))
-    while length(selected) != map[2]
-        push!(selected, rand(possible_ps))
+# Generate a random instance of RockSample(n,m) with a n×n square map and m rocks
+RockSamplePOMDP(map_size::Int, rocknum::Int, rng::AbstractRNG=Random.GLOBAL_RNG) = RockSamplePOMDP((map_size,map_size), rocknum, rng)
+
+# Generate a random instance of RockSample with a n×m map and l rocks
+function RockSamplePOMDP(map_size::Tuple{Int, Int}, rocknum::Int, rng::AbstractRNG=Random.GLOBAL_RNG)
+    possible_ps = [(i, j) for i in 1:map_size[1], j in 1:map_size[2]]
+    selected = unique(rand(rng, possible_ps, rocknum))
+    while length(selected) != rocknum
+        push!(selected, rand(rng, possible_ps))
         selected = unique!(selected)
     end
-    return RockSamplePOMDP(map_size=(map[1],map[1]), rocks_positions=selected)
+    return RockSamplePOMDP(map_size=map_size, rocks_positions=selected)
 end
+
+# To handle the case where the `rocks_positions` is specified
+RockSamplePOMDP(map_size::Tuple{Int, Int}, rocks_positions::AbstractVector) = RockSamplePOMDP(map_size=map_size, rocks_positions=rocks_positions)
 
 POMDPs.isterminal(pomdp::RockSamplePOMDP, s::RSState) = s.pos == pomdp.terminal_state.pos 
 POMDPs.discount(pomdp::RockSamplePOMDP) = pomdp.discount_factor
@@ -85,7 +91,6 @@ include("transition.jl")
 include("observations.jl")
 include("reward.jl")
 include("visualization.jl")
-include("util.jl")
 include("heuristics.jl")
 
 end # module

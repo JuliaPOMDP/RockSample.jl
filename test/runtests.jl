@@ -6,8 +6,6 @@ using POMDPModelTools
 using POMDPPolicies
 using POMDPSimulators
 using BeliefUpdaters
-using DiscreteValueIteration
-using QMDP
 using Test
 
 function test_state_indexing(pomdp::RockSamplePOMDP{K}, ss::Vector{RSState{K}}) where K
@@ -100,8 +98,6 @@ end
 
 @testset "simulation" begin 
     pomdp = RockSamplePOMDP{3}(init_pos=(1,1))
-    mdp = solve(RSMDPSolver(), UnderlyingMDP(pomdp))
-    qmdp = solve(RSQMDPSolver(), pomdp)
     rng = MersenneTwister(3)
     up = DiscreteUpdater(pomdp)
 
@@ -124,6 +120,13 @@ end
     @test n_steps(hist) > pomdp.map_size[1]
 end
 
+@testset "mdp/qmdp policy" begin
+    pomdp = RockSamplePOMDP(15,15)
+    @time solve(RSMDPSolver(), UnderlyingMDP(pomdp))
+    @time solve(RSMDPSolver(), pomdp)
+    @time solve(RSQMDPSolver(), pomdp)
+end
+
 @testset "rendering" begin 
     pomdp = RockSamplePOMDP{3}(init_pos=(1,1))
     s0 = RSState{3}((1,1), [true, false, true])
@@ -133,4 +136,7 @@ end
 @testset "constructor" begin
     @test RockSamplePOMDP() isa RockSamplePOMDP
     @test RockSamplePOMDP(rocks_positions=[(1,1),(2,2)]) isa RockSamplePOMDP{2}
+    @test RockSamplePOMDP(7,8) isa RockSamplePOMDP{8}
+    @test RockSamplePOMDP((13,14), 15) isa RockSamplePOMDP{15}
+    @test RockSamplePOMDP((11,5), [(1,2), (2,4), (11,5)]) isa RockSamplePOMDP{3}
 end
