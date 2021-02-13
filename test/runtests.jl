@@ -104,15 +104,27 @@ end
     # go straight to the exit
     policy = FunctionPolicy(s->RockSample.BASIC_ACTIONS_DICT[:east]) 
     hr = HistoryRecorder(rng=rng)
-    hist = simulate(hr, pomdp, policy, up)
+    b0 = initialstate(pomdp)
+    s0 = rand(b0)
+    rs_exit = solve(RSExitSolver(), pomdp)
+    hist = simulate(hr, pomdp, policy, up, b0, s0)
     @test undiscounted_reward(hist) == pomdp.exit_reward
     @test discounted_reward(hist) ≈ discount(pomdp)^(n_steps(hist) - 1) * pomdp.exit_reward
+    @test discounted_reward(hist) ≈ value(rs_exit, s0)
+    @test value(rs_exit, pomdp.terminal_state) == 0.0
 
     # random policy
     policy = RandomPolicy(pomdp, rng=rng)
     hr = HistoryRecorder(rng=rng)
     hist = simulate(hr, pomdp, policy, up)
     @test n_steps(hist) > pomdp.map_size[1]
+end
+
+@testset "mdp/qmdp policy" begin
+    pomdp = RockSamplePOMDP(15,15)
+    @time solve(RSMDPSolver(), UnderlyingMDP(pomdp))
+    @time solve(RSMDPSolver(), pomdp)
+    @time solve(RSQMDPSolver(), pomdp)
 end
 
 @testset "rendering" begin 
@@ -124,4 +136,7 @@ end
 @testset "constructor" begin
     @test RockSamplePOMDP() isa RockSamplePOMDP
     @test RockSamplePOMDP(rocks_positions=[(1,1),(2,2)]) isa RockSamplePOMDP{2}
+    @test RockSamplePOMDP(7,8) isa RockSamplePOMDP{8}
+    @test RockSamplePOMDP((13,14), 15) isa RockSamplePOMDP{15}
+    @test RockSamplePOMDP((11,5), [(1,2), (2,4), (11,5)]) isa RockSamplePOMDP{3}
 end

@@ -14,7 +14,7 @@ function POMDPModelTools.render(pomdp::RockSamplePOMDP, step;
     for (i,(rx,ry)) in enumerate(pomdp.rocks_positions)
         ctx = cell_ctx((rx,ry), (nx,ny))
         clr = "black"
-        if viz_rock_state && get(step, :s, nothing) != nothing
+        if viz_rock_state && get(step, :s, nothing) !== nothing
             clr = step[:s].rocks[i] ? "green" : "red"
         end
         rock = compose(ctx, ngon(0.5, 0.5, 0.3, 6), stroke(clr), fill("gray"))
@@ -23,10 +23,10 @@ function POMDPModelTools.render(pomdp::RockSamplePOMDP, step;
     rocks = compose(context(), rocks...)
     exit_area = render_exit((nx,ny))
 
-    if get(step, :s, nothing) != nothing
+    if get(step, :s, nothing) !== nothing
         agent_ctx = cell_ctx(step[:s].pos, (nx,ny))
         agent = render_agent(agent_ctx)       
-        if get(step, :a, nothing) != nothing 
+        if get(step, :a, nothing) !== nothing 
             action = render_action(pomdp, step)
         end
     else
@@ -35,7 +35,7 @@ function POMDPModelTools.render(pomdp::RockSamplePOMDP, step;
     end
 
     sz = min(w,h)
-    if action != nothing && step.a == BASIC_ACTIONS_DICT[:sample]
+    if action !== nothing && step.a == BASIC_ACTIONS_DICT[:sample]
         return compose(context((w-sz)/2, (h-sz)/2, sz, sz), action, agent, exit_area, rocks, grid, outline)
     end
     return compose(context((w-sz)/2, (h-sz)/2, sz, sz), agent, exit_area, rocks, action, grid, outline)
