@@ -41,9 +41,11 @@ end
     map_size::Tuple{Int, Int} = (5,5)
     rocks_positions::SVector{K,RSPos} = @SVector([(1,1), (3,3), (4,4)])
     init_pos::RSPos = (1,1)
-    sensor_efficiency::Float64 = 10.0
+    sensor_efficiency::Float64 = 20.0
     bad_rock_penalty::Float64 = -10
     good_rock_reward::Float64 = 10.
+    step_penalty::Float64 = 0.
+    sensor_use_penalty::Float64 = 0.
     exit_reward::Float64 = 10.
     terminal_state::RSState{K} = RSState(RSPos(-1,-1),
                                          SVector{length(rocks_positions),Bool}(falses(length(rocks_positions))))

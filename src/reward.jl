@@ -1,11 +1,15 @@
 function POMDPs.reward(pomdp::RockSamplePOMDP, s::RSState, a::Int)
+    r = pomdp.step_penalty
     if next_position(s, a)[1] > pomdp.map_size[1]
-        return pomdp.exit_reward
+        r += pomdp.exit_reward
+        return r
     end
 
     if a == BASIC_ACTIONS_DICT[:sample] && in(s.pos, pomdp.rocks_positions) # sample 
         rock_ind = findfirst(isequal(s.pos), pomdp.rocks_positions) # slow ?
-        return s.rocks[rock_ind] ? pomdp.good_rock_reward : pomdp.bad_rock_penalty 
+        r += s.rocks[rock_ind] ? pomdp.good_rock_reward : pomdp.bad_rock_penalty 
+    elseif a > N_BASIC_ACTIONS # using sesnsor
+        r += pomdp.sensor_use_penalty
     end
-    return 0.
+    return r
 end
