@@ -38,6 +38,7 @@ using POMDPs
 using RockSample 
 using SARSOP # load a  POMDP Solver
 using POMDPGifs # to make gifs
+using Cairo # for making/saving the gif
 
 pomdp = RockSamplePOMDP(rocks_positions=[(2,3), (4,4), (4,2)], 
                         sensor_efficiency=20.0,
