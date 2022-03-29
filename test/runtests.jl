@@ -87,13 +87,25 @@ end
     rng = MersenneTwister(3)
     s = rand(rng, initialstate(pomdp))
     @test reward(pomdp, s, 5, s) == pomdp.bad_rock_penalty
-    @test reward(pomdp, s, 1, s) == 0.0
+    @test reward(pomdp, s, 1, s) == pomdp.step_penalty
     s = RSState(RSPos(3,3), s.rocks)
     @test reward(pomdp, s, 5, s) == pomdp.good_rock_reward
-    @test reward(pomdp, s, 2, s) == 0.0
+    @test reward(pomdp, s, 2, s) == pomdp.step_penalty
+    @test reward(pomdp, s, 6, s) == pomdp.sensor_use_penalty
+    @test reward(pomdp, s, 6, s) == 0.
+    @test reward(pomdp, s, 1, s) == 0.
     s = RSState(RSPos(5,4), s.rocks)
     sp = rand(rng, transition(pomdp, s, RockSample.BASIC_ACTIONS_DICT[:east]))
     @test reward(pomdp, s, RockSample.BASIC_ACTIONS_DICT[:east], sp) == pomdp.exit_reward
+    
+    pomdp = RockSamplePOMDP{3}(init_pos=(1,1), step_penalty=-1., sensor_use_penalty=-5.)
+    rng = MersenneTwister(3)
+    s = rand(rng, initialstate(pomdp))
+    @test reward(pomdp, s, 1, s) == -1.
+    @test reward(pomdp, s, 6, s) == -5. - 1.
+    @test reward(pomdp, s, 5, s) == pomdp.bad_rock_penalty - 1.
+    s = RSState(RSPos(3,3), s.rocks)
+    @test reward(pomdp, s, 5, s) == pomdp.good_rock_reward - 1.
 end
 
 @testset "simulation" begin 
@@ -131,6 +143,8 @@ end
     pomdp = RockSamplePOMDP{3}(init_pos=(1,1))
     s0 = RSState{3}((1,1), [true, false, true])
     render(pomdp, (s=s0, a=3))
+    b0 = initialstate(pomdp)
+    render(pomdp, (s=s0, a=3, b=b0))
 end
 
 @testset "constructor" begin
