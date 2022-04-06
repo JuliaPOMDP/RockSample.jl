@@ -1,4 +1,3 @@
-using Revise
 using Random
 using POMDPs
 using POMDPSimulators
@@ -19,11 +18,3 @@ policy = solve(solver, pomdp)
 
 sim = GifSimulator(filename="test.gif", max_steps=30)
 simulate(sim, pomdp, policy)
-
-hr = HistoryRecorder(max_steps=50)
-hist = simulate(hr, pomdp, policy, up)
-
-makegif(pomdp, hist, filename="test.gif", spec="(s,a)")
-
-
-
