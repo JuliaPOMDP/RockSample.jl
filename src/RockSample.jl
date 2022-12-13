@@ -81,6 +81,11 @@ function RockSamplePOMDP(map_size::Tuple{Int, Int}, rocknum::Int, rng::AbstractR
     return RockSamplePOMDP(map_size=map_size, rocks_positions=selected)
 end
 
+# transform a Rocksample state to a vector 
+function POMDPs.convert_s(T::Type{<:AbstractArray}, s::RSState, m::RockSamplePOMDP)
+    return convert(T, vcat(s.pos, s.rocks))
+end
+
 # To handle the case where the `rocks_positions` is specified
 RockSamplePOMDP(map_size::Tuple{Int, Int}, rocks_positions::AbstractVector) = RockSamplePOMDP(map_size=map_size, rocks_positions=rocks_positions)
 
