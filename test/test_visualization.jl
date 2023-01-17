@@ -1,18 +1,9 @@
-using Revise
-using POMDPs
-using POMDPModelTools
-using RockSample
-using Random
-using Compose
-
 pomdp = RockSamplePOMDP{3}()
 
 rng = MersenneTwister(2)
-s0 = initialstate(pomdp, rng)
+b0 = initialstate(pomdp)
+s0 = rand(b0)
 
-render(pomdp, (s=s0, a=6))
-
-c = render(pomdp, Dict(:s=>(2,2)))
-
+c = render(pomdp, (s=s0, a=6, b=b0))
 
 c |> SVG("rocksample.svg")

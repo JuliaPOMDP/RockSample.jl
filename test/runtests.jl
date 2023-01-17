@@ -7,6 +7,7 @@ using POMDPPolicies
 using POMDPSimulators
 using BeliefUpdaters
 using Test
+using Compose
 
 function test_state_indexing(pomdp::RockSamplePOMDP{K}, ss::Vector{RSState{K}}) where K
     for (i,s) in enumerate(states(pomdp))
@@ -133,7 +134,7 @@ end
 end
 
 @testset "mdp/qmdp policy" begin
-    pomdp = RockSamplePOMDP(15,15)
+    pomdp = RockSamplePOMDP(5,5)
     @time solve(RSMDPSolver(), UnderlyingMDP(pomdp))
     @time solve(RSMDPSolver(), pomdp)
     @time solve(RSQMDPSolver(), pomdp)
@@ -153,4 +154,8 @@ end
     @test RockSamplePOMDP(7,8) isa RockSamplePOMDP{8}
     @test RockSamplePOMDP((13,14), 15) isa RockSamplePOMDP{15}
     @test RockSamplePOMDP((11,5), [(1,2), (2,4), (11,5)]) isa RockSamplePOMDP{3}
+end
+
+@testset "visualization" begin
+    include("test_visualization.jl")
 end
