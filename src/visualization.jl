@@ -72,6 +72,8 @@ function get_rock_beliefs(pomdp::RockSamplePOMDP{K}, b) where K
     rock_beliefs = zeros(Float64, K)
     if hasproperty(b, :b)
         b′ = b.b
+    elseif b isa ParticleCollection
+        b′ = weighted_particles(b)
     else
         b′ = b
     end

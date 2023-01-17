@@ -1,9 +1,39 @@
 pomdp = RockSamplePOMDP{3}()
+function test_initial_belief()
+    rng = MersenneTwister(2)
+    s0 = initialstate(pomdp, rng)
 
-rng = MersenneTwister(2)
-b0 = initialstate(pomdp)
-s0 = rand(b0)
+    c = render(pomdp, (s=s0, a=6))
+    c |> SVG("rocksample1.svg")
+end
 
-c = render(pomdp, (s=s0, a=6, b=b0))
+function test_particle_collection()
+    b0 = ParticleCollection{RSState{3}}(
+            RSState{3}[
+                RSState{3}([1, 1], Bool[1, 0, 0]), RSState{3}([1, 1], Bool[1, 1, 1]), 
+                RSState{3}([1, 1], Bool[0, 0, 1]), RSState{3}([1, 1], Bool[1, 0, 1]), 
+                RSState{3}([1, 1], Bool[1, 0, 0]), RSState{3}([1, 1], Bool[1, 1, 0]), 
+                RSState{3}([1, 1], Bool[0, 1, 0]), RSState{3}([1, 1], Bool[1, 1, 0]), 
+                RSState{3}([1, 1], Bool[1, 0, 1]), RSState{3}([1, 1], Bool[0, 1, 1]),
+                RSState{3}([1, 1], Bool[0, 0, 1]), RSState{3}([1, 1], Bool[1, 0, 0]), 
+                RSState{3}([1, 1], Bool[1, 0, 1]), RSState{3}([1, 1], Bool[0, 1, 1]), 
+                RSState{3}([1, 1], Bool[0, 1, 1]), RSState{3}([1, 1], Bool[1, 1, 0]), 
+                RSState{3}([1, 1], Bool[1, 1, 1]), RSState{3}([1, 1], Bool[0, 0, 1]), 
+                RSState{3}([1, 1], Bool[1, 1, 1]), RSState{3}([1, 1], Bool[1, 0, 1])
+            ], 
+            nothing
+        )
+    s0 = rand(b0)
+    c = render(pomdp, (s=s0, a=6, b=b0))
+    c |> SVG("rocksample2.svg")
+end
 
-c |> SVG("rocksample.svg")
+function test_pomcp()
+    solver = POMCPSolver(
+        max_depth=100,
+        c=10.0
+    )
+    policy = solve(solver, pomdp)
+    sim = GifSimulator(filename="test.gif", max_steps=30)
+    simulate(sim, pomdp, policy)
+end
