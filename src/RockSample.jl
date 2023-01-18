@@ -2,7 +2,7 @@ module RockSample
 
 using LinearAlgebra
 using POMDPs
-using POMDPModelTools
+using POMDPTools
 using StaticArrays
 using Parameters
 using Random
@@ -10,7 +10,6 @@ using Compose
 using Combinatorics
 using ParticleFilters
 using DiscreteValueIteration
-using POMDPPolicies
 
 export
     RockSamplePOMDP,

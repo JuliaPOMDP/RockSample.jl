@@ -1,11 +1,7 @@
 using Random
 using RockSample
 using POMDPs
-using POMDPTesting
-using POMDPModelTools
-using POMDPPolicies
-using POMDPSimulators
-using BeliefUpdaters
+using POMDPTools
 using Test
 
 function test_state_indexing(pomdp::RockSamplePOMDP{K}, ss::Vector{RSState{K}}) where K
