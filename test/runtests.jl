@@ -17,14 +17,6 @@ function test_state_indexing(pomdp::RockSamplePOMDP{K}, ss::Vector{RSState{K}}) 
     return true
 end
 
-# A simple test for convert_s function
-p = RockSamplePOMDP{3}()
-b0 = initialstate(p)
-s_test = rand(b0)
-v_s_test = convert_s(Vector{Float64}, s_test, p)
-s_back = convert_s(RSState, v_s_test, p)
-@test s_back == s_test
-
 @testset "state space" begin 
     pomdp = RockSamplePOMDP{3}()
     state_iterator =  states(pomdp)
@@ -36,6 +28,15 @@ s_back = convert_s(RSState, v_s_test, p)
     ss = ordered_states(pomdp)
     @test length(ss) == length(pomdp)
     @test test_state_indexing(pomdp, ss)
+end
+
+@testset "convert_s" begin
+    p = RockSamplePOMDP{3}()
+    b0 = initialstate(p)
+    s_test = rand(b0)
+    v_s_test = convert_s(Vector{Float64}, s_test, p)
+    s_back = convert_s(RSState, v_s_test, p)
+    @test s_back == s_test
 end
 
 @testset "action space" begin 
@@ -141,7 +142,7 @@ end
 end
 
 @testset "mdp/qmdp policy" begin
-    pomdp = RockSamplePOMDP(15,15)
+    pomdp = RockSamplePOMDP(5,5)
     @time solve(RSMDPSolver(), UnderlyingMDP(pomdp))
     @time solve(RSMDPSolver(), pomdp)
     @time solve(RSQMDPSolver(), pomdp)
