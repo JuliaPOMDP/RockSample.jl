@@ -9,7 +9,6 @@ using BeliefUpdaters
 using Test
 using Compose
 using ParticleFilters
-using BasicPOMCP
 
 function test_state_indexing(pomdp::RockSamplePOMDP{K}, ss::Vector{RSState{K}}) where K
     for (i,s) in enumerate(states(pomdp))
@@ -160,7 +159,6 @@ end
 
 @testset "visualization" begin
     include("test_visualization.jl")
-    test_initial_belief()
+    test_initial_state()
     test_particle_collection()
-    test_pomcp()
 end

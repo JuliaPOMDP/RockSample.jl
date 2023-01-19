@@ -1,10 +1,10 @@
 pomdp = RockSamplePOMDP{3}()
-function test_initial_belief()
-    rng = MersenneTwister(2)
-    s0 = initialstate(pomdp, rng)
-
-    c = render(pomdp, (s=s0, a=6))
-    c |> SVG("rocksample1.svg")
+function test_initial_state()
+	rng = MersenneTwister(2)
+	s0 = rand(rng, initialstate(pomdp))
+	
+	c = render(pomdp, (s=s0, a=6))
+	c |> SVG("rocksample.svg")
 end
 
 function test_particle_collection()
@@ -26,14 +26,4 @@ function test_particle_collection()
     s0 = rand(b0)
     c = render(pomdp, (s=s0, a=6, b=b0))
     c |> SVG("rocksample2.svg")
-end
-
-function test_pomcp()
-    solver = POMCPSolver(
-        max_depth=100,
-        c=10.0
-    )
-    policy = solve(solver, pomdp)
-    sim = GifSimulator(filename="test.gif", max_steps=30)
-    simulate(sim, pomdp, policy)
 end
