@@ -4,6 +4,7 @@ function test_initial_state()
 	s0 = rand(rng, initialstate(pomdp))
 	
 	c = render(pomdp, (s=s0, a=6))
+    c = render(pomdp, (s=s0, a=6, b=Deterministic(s0)))
 	c |> SVG("rocksample.svg")
 end
 

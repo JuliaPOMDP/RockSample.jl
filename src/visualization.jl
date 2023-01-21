@@ -70,20 +70,8 @@ end
 
 function get_rock_beliefs(pomdp::RockSamplePOMDP{K}, b) where K
     rock_beliefs = zeros(Float64, K)
-    if b isa ParticleCollection
-        for (sᵢ, bᵢ) ∈ weighted_particles(b)
-            rock_beliefs[sᵢ.rocks.==1] .+= bᵢ
-        end
-    else
-        if hasproperty(b, :b)
-            b′ = b.b
-        else
-            b′ = b
-        end
-        for (i, bᵢ) ∈ enumerate(b′)
-            sᵢ = state_from_index(pomdp, i)
-            rock_beliefs[sᵢ.rocks.==1] .+= bᵢ
-        end
+    for (sᵢ, bᵢ) in weighted_iterator(b)
+        rock_beliefs[sᵢ.rocks.==1] .+= bᵢ
     end
     return rock_beliefs
 end

@@ -11,7 +11,6 @@ using Combinatorics
 using ParticleFilters
 using DiscreteValueIteration
 using POMDPPolicies
-using ParticleFilters
 
 export
     RockSamplePOMDP,
