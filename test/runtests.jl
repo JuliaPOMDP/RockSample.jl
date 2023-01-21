@@ -55,14 +55,14 @@ end
     pomdp = RockSamplePOMDP{3}(init_pos=(1,1))
     s0 = rand(rng, initialstate(pomdp))
     @test s0.pos == pomdp.init_pos
-    d = transition(pomdp, s0, 1) # move up
+    d = transition(pomdp, s0, 2) # move up
     sp = rand(rng, d)
     spp = rand(rng, d)
     @test spp == sp
     @test sp.pos == [1, 2]
     @test sp.rocks == s0.rocks
     s = RSState{3}((pomdp.map_size[1], 1), s0.rocks)
-    d = transition(pomdp, s, 2) # move right
+    d = transition(pomdp, s, 3) # move right
     sp = rand(rng, d)
     @test isterminal(pomdp, sp)
     @test sp == pomdp.terminal_state
@@ -93,14 +93,14 @@ end
     pomdp = RockSamplePOMDP{3}(init_pos=(1,1))
     rng = MersenneTwister(3)
     s = rand(rng, initialstate(pomdp))
-    @test reward(pomdp, s, 5, s) == pomdp.bad_rock_penalty
-    @test reward(pomdp, s, 1, s) == pomdp.step_penalty
-    s = RSState(RSPos(3,3), s.rocks)
-    @test reward(pomdp, s, 5, s) == pomdp.good_rock_reward
+    @test reward(pomdp, s, 1, s) == pomdp.bad_rock_penalty
     @test reward(pomdp, s, 2, s) == pomdp.step_penalty
+    s = RSState(RSPos(3,3), s.rocks)
+    @test reward(pomdp, s, 1, s) == pomdp.good_rock_reward
+    @test reward(pomdp, s, 3, s) == pomdp.step_penalty
     @test reward(pomdp, s, 6, s) == pomdp.sensor_use_penalty
     @test reward(pomdp, s, 6, s) == 0.
-    @test reward(pomdp, s, 1, s) == 0.
+    @test reward(pomdp, s, 2, s) == 0.
     s = RSState(RSPos(5,4), s.rocks)
     sp = rand(rng, transition(pomdp, s, RockSample.BASIC_ACTIONS_DICT[:east]))
     @test reward(pomdp, s, RockSample.BASIC_ACTIONS_DICT[:east], sp) == pomdp.exit_reward
@@ -108,11 +108,11 @@ end
     pomdp = RockSamplePOMDP{3}(init_pos=(1,1), step_penalty=-1., sensor_use_penalty=-5.)
     rng = MersenneTwister(3)
     s = rand(rng, initialstate(pomdp))
-    @test reward(pomdp, s, 1, s) == -1.
+    @test reward(pomdp, s, 2, s) == -1.
     @test reward(pomdp, s, 6, s) == -5. - 1.
-    @test reward(pomdp, s, 5, s) == pomdp.bad_rock_penalty - 1.
+    @test reward(pomdp, s, 1, s) == pomdp.bad_rock_penalty - 1.
     s = RSState(RSPos(3,3), s.rocks)
-    @test reward(pomdp, s, 5, s) == pomdp.good_rock_reward - 1.
+    @test reward(pomdp, s, 1, s) == pomdp.good_rock_reward - 1.
 end
 
 @testset "simulation" begin 
