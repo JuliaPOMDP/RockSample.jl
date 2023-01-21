@@ -103,7 +103,7 @@ function render_agent(ctx)
 end
 
 function render_action_text(pomdp::RockSamplePOMDP, step, pre_act_text)
-    actions = ["North", "East", "South", "West", "Sample"]
+    actions = ["Sample", "North", "East", "South", "West"]
     action_text = "Terminal"
     if get(step, :a, nothing) !== nothing
         if step.a <= N_BASIC_ACTIONS
