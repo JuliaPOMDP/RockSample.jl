@@ -2,15 +2,14 @@ module RockSample
 
 using LinearAlgebra
 using POMDPs
-using POMDPModelTools
+using POMDPTools
 using StaticArrays
 using Parameters
 using Random
 using Compose
 using Combinatorics
-using ParticleFilters
 using DiscreteValueIteration
-using POMDPPolicies
+using ParticleFilters           # used in heuristics
 
 export
     RockSamplePOMDP,
@@ -80,6 +79,17 @@ function RockSamplePOMDP(map_size::Tuple{Int, Int}, rocknum::Int, rng::AbstractR
     end
     return RockSamplePOMDP(map_size=map_size, rocks_positions=selected)
 end
+
+# transform a Rocksample state to a vector 
+function POMDPs.convert_s(T::Type{<:AbstractArray}, s::RSState, m::RockSamplePOMDP)
+    return convert(T, vcat(s.pos, s.rocks))
+end
+
+# transform a vector to a RSState
+function POMDPs.convert_s(T::Type{RSState}, v::AbstractArray, m::RockSamplePOMDP)
+    return RSState(RSPos(v[1], v[2]), SVector{length(v)-2,Bool}(v[i] for i = 3:length(v)))
+end
+
 
 # To handle the case where the `rocks_positions` is specified
 RockSamplePOMDP(map_size::Tuple{Int, Int}, rocks_positions::AbstractVector) = RockSamplePOMDP(map_size=map_size, rocks_positions=rocks_positions)

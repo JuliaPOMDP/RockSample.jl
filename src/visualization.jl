@@ -1,4 +1,4 @@
-function POMDPModelTools.render(pomdp::RockSamplePOMDP, step;
+function POMDPTools.render(pomdp::RockSamplePOMDP, step;
     viz_rock_state=true,
     viz_belief=true,
     pre_act_text=""

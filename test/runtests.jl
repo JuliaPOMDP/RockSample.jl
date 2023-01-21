@@ -1,11 +1,7 @@
 using Random
 using RockSample
 using POMDPs
-using POMDPTesting
-using POMDPModelTools
-using POMDPPolicies
-using POMDPSimulators
-using BeliefUpdaters
+using POMDPTools
 using Test
 using Compose
 using ParticleFilters
@@ -30,6 +26,15 @@ end
     ss = ordered_states(pomdp)
     @test length(ss) == length(pomdp)
     @test test_state_indexing(pomdp, ss)
+end
+
+@testset "convert_s" begin
+    p = RockSamplePOMDP{3}()
+    b0 = initialstate(p)
+    s_test = rand(b0)
+    v_s_test = convert_s(Vector{Float64}, s_test, p)
+    s_back = convert_s(RSState, v_s_test, p)
+    @test s_back == s_test
 end
 
 @testset "action space" begin 
