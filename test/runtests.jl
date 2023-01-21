@@ -3,6 +3,8 @@ using RockSample
 using POMDPs
 using POMDPTools
 using Test
+using Compose
+using ParticleFilters
 
 function test_state_indexing(pomdp::RockSamplePOMDP{K}, ss::Vector{RSState{K}}) where K
     for (i,s) in enumerate(states(pomdp))
@@ -158,4 +160,10 @@ end
     @test RockSamplePOMDP(7,8) isa RockSamplePOMDP{8}
     @test RockSamplePOMDP((13,14), 15) isa RockSamplePOMDP{15}
     @test RockSamplePOMDP((11,5), [(1,2), (2,4), (11,5)]) isa RockSamplePOMDP{3}
+end
+
+@testset "visualization" begin
+    include("test_visualization.jl")
+    test_initial_state()
+    test_particle_collection()
 end

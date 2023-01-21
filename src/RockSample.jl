@@ -8,8 +8,8 @@ using Parameters
 using Random
 using Compose
 using Combinatorics
-using ParticleFilters
 using DiscreteValueIteration
+using ParticleFilters           # used in heuristics
 
 export
     RockSamplePOMDP,
