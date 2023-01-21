@@ -1,9 +1,9 @@
 const N_BASIC_ACTIONS = 5
-const BASIC_ACTIONS_DICT = Dict(:north => 1, 
-                                :east => 2,
-                                :south => 3,
-                                :west => 4,
-                                :sample => 5)
+const BASIC_ACTIONS_DICT = Dict(:sample => 1
+                                :north => 2, 
+                                :east => 3,
+                                :south => 4,
+                                :west => 5)
 
 const ACTION_DIRS = (RSPos(0,1),
                     RSPos(1,0),
