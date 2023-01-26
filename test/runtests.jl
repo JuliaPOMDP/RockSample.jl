@@ -38,16 +38,29 @@ end
 end
 
 @testset "action space" begin 
-    pomdp = RockSamplePOMDP{3}()
+    rng = MersenneTwister(1)
+    pomdp = RockSamplePOMDP((5, 5), 3, rng)
     acts = actions(pomdp)
+    b1 = ParticleCollection{RSState{3}}(
+        RSState{3}[
+            RSState{3}([1, 1], Bool[0, 1, 0]), 
+            RSState{3}([1, 1], Bool[1, 1, 1])
+        ], nothing)
+    b2 = ParticleCollection{RSState{3}}(
+        RSState{3}[
+            RSState{3}([3, 1], Bool[0, 1, 0]), 
+            RSState{3}([3, 1], Bool[1, 1, 1])
+        ], nothing)
     @test acts == ordered_actions(pomdp)
     @test length(acts) == length(actions(pomdp))
     @test length(acts) == RockSample.N_BASIC_ACTIONS + 3
-    s = RSState{3}((1,1), (true, false, false))
+    s = RSState{3}((3,1), (true, false, false))
     @test actions(pomdp, s) == actions(pomdp)
     s2 = RSState{3}((1,2), (true, false, false))
     @test length(actions(pomdp, s2)) == length(actions(pomdp)) - 1
     @test actionindex(pomdp, 1) == 1
+    @test length(actions(pomdp, b1)) == length(actions(pomdp)) - 1
+    @test actions(pomdp, b2) == actions(pomdp)
 end
 
 @testset "transition" begin

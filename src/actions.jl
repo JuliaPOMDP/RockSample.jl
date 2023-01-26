@@ -23,3 +23,7 @@ function POMDPs.actions(pomdp::RockSamplePOMDP{K}, s::RSState) where K
     end
 end
 
+function POMDPs.actions(pomdp::RockSamplePOMDP{K}, b::ParticleCollection) where K
+    state = rand(Random.GLOBAL_RNG, b)
+    return actions(pomdp, state)
+end
