@@ -23,3 +23,8 @@ function POMDPs.actions(pomdp::RockSamplePOMDP{K}, s::RSState) where K
     end
 end
 
+function POMDPs.actions(pomdp::RockSamplePOMDP{K}, b::ParticleCollection) where K
+    # All states in a belief should have the same position, which is what the valid action space depends on
+    state = rand(Random.GLOBAL_RNG, b) 
+    return actions(pomdp, state)
+end
