@@ -63,27 +63,6 @@ end
     @test actions(pomdp, b2) == actions(pomdp)
 end
 
-@testset "transition" begin
-    rng = MersenneTwister(1)
-    pomdp = RockSamplePOMDP{3}(init_pos=(1,1))
-    s0 = rand(rng, initialstate(pomdp))
-    @test s0.pos == pomdp.init_pos
-    d = transition(pomdp, s0, 2) # move up
-    sp = rand(rng, d)
-    spp = rand(rng, d)
-    @test spp == sp
-    @test sp.pos == [1, 2]
-    @test sp.rocks == s0.rocks
-    s = RSState{3}((pomdp.map_size[1], 1), s0.rocks)
-    d = transition(pomdp, s, 3) # move right
-    sp = rand(rng, d)
-    @test isterminal(pomdp, sp)
-    @test sp == pomdp.terminal_state
-    @inferred transition(pomdp, s0, 3)
-    @inferred rand(rng, transition(pomdp, s0, 3))
-    @test has_consistent_transition_distributions(pomdp)
-end
-
 @testset "observation" begin 
     rng = MersenneTwister(1)
     pomdp = RockSamplePOMDP{3}(init_pos=(1,1))
@@ -179,4 +158,45 @@ end
     include("test_visualization.jl")
     test_initial_state()
     test_particle_collection()
+end
+
+@testset "transition" begin
+    rng = MersenneTwister(1)
+    pomdp = RockSamplePOMDP{3}(init_pos=(1,1))
+    s0 = rand(rng, initialstate(pomdp))
+    @test s0.pos == pomdp.init_pos
+    d = transition(pomdp, s0, 2) # move up
+    sp = rand(rng, d)
+    spp = rand(rng, d)
+    @test spp == sp
+    @test sp.pos == [1, 2]
+    @test sp.rocks == s0.rocks
+    s = RSState{3}((pomdp.map_size[1], 1), s0.rocks)
+    d = transition(pomdp, s, 3) # move right
+    sp = rand(rng, d)
+    @test isterminal(pomdp, sp)
+    @test sp == pomdp.terminal_state
+    @inferred transition(pomdp, s0, 3)
+    @inferred rand(rng, transition(pomdp, s0, 3))
+    @test has_consistent_transition_distributions(pomdp)
+    include("../src/transition.jl")
+    include("../src/actions.jl")
+    # test next_pose for each action
+    s = RSState{3}((1, 1), s0.rocks)
+    # sample
+    @test next_position(s, BASIC_ACTIONS_DICT[:sample]) == s.pos
+    # north
+    @test next_position(s, BASIC_ACTIONS_DICT[:north]) == [1, 2]
+    # east
+    @test next_position(s, BASIC_ACTIONS_DICT[:east]) == [2, 1]
+    # south
+    s = RSState{3}((1, 2), s0.rocks)
+    @test next_position(s, BASIC_ACTIONS_DICT[:south]) == [1, 1]
+    # west
+    s = RSState{3}((2, 1), s0.rocks)
+    @test next_position(s, BASIC_ACTIONS_DICT[:west]) == [1, 1]
+    # test sense
+    for i in 1:length(s.rocks)
+        @test next_position(s, N_BASIC_ACTIONS+i) == s.pos
+    end
 end

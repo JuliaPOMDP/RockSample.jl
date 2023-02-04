@@ -26,13 +26,11 @@ function POMDPs.transition(pomdp::RockSamplePOMDP{K}, s::RSState{K}, a::Int) whe
 end
 
 function next_position(s::RSState, a::Int)
-    if a < N_BASIC_ACTIONS
-        # the robot moves 
-        return s.pos + ACTION_DIRS[a]
-    elseif a >= N_BASIC_ACTIONS 
+    if a > N_BASIC_ACTIONS || a == 1
         # robot check rocks or samples
         return s.pos
-    else
-        throw("ROCKSAMPLE ERROR: action $a not valid")
+    elseif a <= N_BASIC_ACTIONS
+        # the robot moves 
+        return s.pos + ACTION_DIRS[a]
     end
 end
