@@ -14,7 +14,7 @@ Implement the RockSample [1] problem with the [POMDPs.jl](https://github.com/Jul
 
 ```julia
 using Pkg
-Pkg.add(PackageSpec(url="https://github.com/JuliaPOMDP/RockSample.jl"))
+Pkg.add("RockSample")
 ```
 
 
