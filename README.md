@@ -1,6 +1,6 @@
 # RockSample.jl 
 
-[![Build Status](https://travis-ci.org/JuliaPOMDP/RockSample.jl.svg?branch=master)](https://travis-ci.org/JuliaPOMDP/RockSample.jl)
+[![CI](https://github.com/JuliaPOMDP/RockSample.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JuliaPOMDP/RockSample.jl/actions/workflows/CI.yml)
 [![codecov](https://codecov.io/github/JuliaPOMDP/RockSample.jl/branch/master/graph/badge.svg?token=EfDZPMisVB)](https://codecov.io/github/JuliaPOMDP/RockSample.jl)
 
 Implement the RockSample [1] problem with the [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl) interface. 
