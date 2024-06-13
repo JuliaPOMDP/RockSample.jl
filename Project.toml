@@ -1,6 +1,6 @@
 name = "RockSample"
 uuid = "de008ff0-c357-11e8-3329-7fe746fe836e"
-version = "0.2.0"
+version = "0.2.1"
 
 [deps]
 Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
@@ -18,8 +18,8 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Combinatorics = "1"
 Compose = "0.7, 0.8, 0.9"
 DiscreteValueIteration = "0.4.4"
-POMDPTools = "0.1"
-POMDPs = "0.9"
+POMDPTools = "0.1, 1"
+POMDPs = "0.9, 1"
 Parameters = "0.12"
 ParticleFilters = "0.5"
 StaticArrays = "1"
