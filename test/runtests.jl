@@ -38,8 +38,7 @@ end
 end
 
 @testset "action space" begin 
-    rng = MersenneTwister(1)
-    pomdp = RockSamplePOMDP((5, 5), 3, rng)
+    pomdp = RockSamplePOMDP((5, 5), [[2,4], [2,5], [3,1]])
     acts = actions(pomdp)
     b1 = ParticleCollection{RSState{3}}(
         RSState{3}[
@@ -64,27 +63,30 @@ end
 end
 
 @testset "observation" begin 
-    rng = MersenneTwister(1)
-    pomdp = RockSamplePOMDP{3}(init_pos=(1,1))
+    pomdp = RockSamplePOMDP{3}(init_pos=(1,1)) # Constructor defaults to rock positions at (1,1), (3,3), (4,4)
     obs = observations(pomdp)
     @test obs == ordered_observations(pomdp)
-    s0 = rand(rng, initialstate(pomdp))
+    s0 = RSState{3}((1,1), [true, false, false])
     od = observation(pomdp, 1, s0)
-    o = rand(rng, od)
+    o = rand(od) # All mass should be on 3, so seed shouldn't matter
     @test o == 3
+    @test isapprox(pdf(od, 3), 1.0)
     @inferred observation(pomdp, 6, s0)
     @inferred observation(pomdp, 1, s0)
-    o = rand(rng, observation(pomdp, 6, s0))
+    od = observation(pomdp, 6, s0)
+    @test isapprox(pdf(od, 1), 1.0)
+    o = rand(od)
     @test o == 1
-    o = rand(rng, observation(pomdp, 7, s0))
-    @test o == 1
+    od = observation(pomdp, 7, s0)
+    @test isapprox(pdf(od, 1), 0.046687; atol=1e-5)
+    @test isapprox(pdf(od, 2), 0.953313; atol=1e-5)
+    @test isapprox(pdf(od, 3), 0.0; atol=1e-5)
     @test has_consistent_observation_distributions(pomdp)
 end
 
 @testset "reward" begin
-    pomdp = RockSamplePOMDP{3}(init_pos=(1,1))
-    rng = MersenneTwister(3)
-    s = rand(rng, initialstate(pomdp))
+    pomdp = RockSamplePOMDP{3}(init_pos=(1,1)) # Constructor defaults to rock positions at (1,1), (3,3), (4,4)
+    s = RSState{3}((1,1), [false, true, true])
     @test reward(pomdp, s, 1, s) == pomdp.bad_rock_penalty
     @test reward(pomdp, s, 2, s) == pomdp.step_penalty
     s = RSState(RSPos(3,3), s.rocks)
@@ -94,12 +96,11 @@ end
     @test reward(pomdp, s, 6, s) == 0.
     @test reward(pomdp, s, 2, s) == 0.
     s = RSState(RSPos(5,4), s.rocks)
-    sp = rand(rng, transition(pomdp, s, RockSample.BASIC_ACTIONS_DICT[:east]))
+    sp = rand(transition(pomdp, s, RockSample.BASIC_ACTIONS_DICT[:east])) # deterministic transition
     @test reward(pomdp, s, RockSample.BASIC_ACTIONS_DICT[:east], sp) == pomdp.exit_reward
     
     pomdp = RockSamplePOMDP{3}(init_pos=(1,1), step_penalty=-1., sensor_use_penalty=-5.)
-    rng = MersenneTwister(3)
-    s = rand(rng, initialstate(pomdp))
+    s = RSState{3}((1,1), [false, true, true])
     @test reward(pomdp, s, 2, s) == -1.
     @test reward(pomdp, s, 6, s) == -5. - 1.
     @test reward(pomdp, s, 1, s) == pomdp.bad_rock_penalty - 1.
@@ -161,23 +162,22 @@ end
 end
 
 @testset "transition" begin
-    rng = MersenneTwister(1)
     pomdp = RockSamplePOMDP{3}(init_pos=(1,1))
-    s0 = rand(rng, initialstate(pomdp))
+    s0 = RSState{3}((1,1), [true, false, false])
     @test s0.pos == pomdp.init_pos
     d = transition(pomdp, s0, 2) # move up
-    sp = rand(rng, d)
-    spp = rand(rng, d)
+    sp = rand(d)
+    spp = rand(d)
     @test spp == sp
     @test sp.pos == [1, 2]
     @test sp.rocks == s0.rocks
     s = RSState{3}((pomdp.map_size[1], 1), s0.rocks)
     d = transition(pomdp, s, 3) # move right
-    sp = rand(rng, d)
+    sp = rand(d)
     @test isterminal(pomdp, sp)
     @test sp == pomdp.terminal_state
     @inferred transition(pomdp, s0, 3)
-    @inferred rand(rng, transition(pomdp, s0, 3))
+    @inferred rand(transition(pomdp, s0, 3))
     @test has_consistent_transition_distributions(pomdp)
     include("../src/transition.jl")
     include("../src/actions.jl")
